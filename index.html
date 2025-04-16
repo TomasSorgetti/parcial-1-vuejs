@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Title -->
+    <title>Parcial 1 - Tomás Sorgetti</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="src/styles/global.css" />
+  </head>
+  <body>
+    <!-- App -->
+    <div id="root" v-cloak>
+      <main-layout>
+        <h1>{{ message }}</h1>
+        <todo-item
+          v-for="todo in todos"
+          :key="todo.id"
+          :todo="todo"
+        ></todo-item>
+        <button-component @click="addTodo">Añadir Tarea</button-component>
+      </main-layout>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/vue@3.5.13/dist/vue.global.js"></script>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
