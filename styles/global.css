@@ -31,6 +31,7 @@
   --light-text-color: #ffffff;
   --primary-color: #8803ff;
   --light-dark-color: #171717;
+  --error-color: #bb3737;
 
   --font-family: "Geist", sans-serif;
 
@@ -85,10 +86,11 @@ body {
         .palette-creator {
           display: flex;
           flex-direction: column;
-          gap: 1.5rem;
+          gap: 2rem;
           max-width: 400px;
 
           .form-field {
+            position: relative;
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
@@ -147,6 +149,13 @@ body {
                   }
                 }
               }
+            }
+
+            small {
+              color: var(--error-color);
+              position: absolute;
+              left: 0;
+              bottom: -1.2rem;
             }
           }
 

@@ -128,6 +128,17 @@ app.component("palette-creator", {
   },
   methods: {
     submitForm() {
+      this.validateForm();
+
+      if (
+        this.errorForm.name ||
+        this.errorForm.description ||
+        this.errorForm.category ||
+        this.errorForm.mode
+      ) {
+        return;
+      }
+
       if (
         this.formData.mode &&
         this.formData.category &&
@@ -145,8 +156,70 @@ app.component("palette-creator", {
       this.formData.category = "";
       this.formData.mode = "";
     },
+    validateInput(field, value) {
+      switch (field) {
+        case "name":
+          if (!value) {
+            this.errorForm.name = "El nombre es obligatorio";
+            return this.errorForm.name;
+          }
+          if (value.length < 3) {
+            this.errorForm.name = "El nombre debe tener al menos 3 caracteres";
+            return this.errorForm.name;
+          }
+          if (value.length > 20) {
+            this.errorForm.name = "El nombre debe tener menos de 20 caracteres";
+            return this.errorForm.name;
+          }
+          this.errorForm.name = "";
+          break;
 
+        case "description":
+          if (!value) {
+            this.errorForm.description = "La descripción es obligatoria";
+            return this.errorForm.description;
+          }
+          if (value.length < 10) {
+            this.errorForm.description =
+              "La descripción debe tener al menos 10 caracteres";
+            return this.errorForm.description;
+          }
+          if (value.length > 40) {
+            this.errorForm.description =
+              "La descripción debe tener menos de 40 caracteres";
+            return this.errorForm.description;
+          }
+          this.errorForm.description = "";
+          break;
+
+        case "category":
+          if (!value) {
+            this.errorForm.category = "La categoría es obligatoria";
+            return this.errorForm.category;
+          }
+          this.errorForm.category = "";
+          break;
+
+        case "mode":
+          if (!value) {
+            this.errorForm.mode = "El modo es obligatorio";
+            return this.errorForm.mode;
+          }
+          this.errorForm.mode = "";
+
+        default:
+          this.errorForm[field] = "";
+          break;
+      }
+    },
+    validateForm() {
+      this.validateInput("name", this.formData.name);
+      this.validateInput("description", this.formData.description);
+      this.validateInput("category", this.formData.category);
+      this.validateInput("mode", this.formData.mode);
+    },
     updateMode(mode) {
+      this.validateInput("mode", mode);
       this.formData.mode = mode;
     },
   },
@@ -158,7 +231,9 @@ app.component("palette-creator", {
           v-model="formData.name"
           type="text"
           placeholder="La mejor paleta de todas"
+          @blur="validateInput('name', formData.name)"
         />
+        <small>{{errorForm.name}}</small>
       </div>
 
       <div class="form-field">
@@ -167,19 +242,23 @@ app.component("palette-creator", {
           v-model="formData.description"
           type="text"
           placeholder="Descripción de la mejor paleta"
+          @blur="validateInput('description', formData.description)"
         />
+        <small>{{errorForm.description}}</small>
       </div>
 
       <div class="form-field">
         <label for="">Categoría:</label>
         <select
           v-model="formData.category"
+          @change="validateInput('category', formData.category)"
         >
           <option value="" disabled>Selecciona una categoría</option>
           <option v-for="category in categories" v-bind:value="category.value">
             {{ category.label }}
           </option>
         </select>
+        <small>{{errorForm.category}}</small>
       </div>
       <div class="form-field">
         <label >Modo:</label>
@@ -188,12 +267,13 @@ app.component("palette-creator", {
               <input
                 type="checkbox"
                 v-bind:checked="formData.mode === mode.value"
-                @change="updateMode(mode.value)"
                 class="checkbox"
+                @change="updateMode(mode.value)"
               >
               {{ mode.label }}
             </label>
           </div>
+          <small>{{errorForm.mode}}</small>
       </div>
 
       <button type="submit" class="create-palette" v-bind:disabled="isLoading">Crear paleta</button>
