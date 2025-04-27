@@ -1,0 +1,144 @@
+[v-cloak] {
+  display: none;
+}
+
+/* Fonts */
+@font-face {
+  font-family: "Geist";
+  src: url("../assets/fonts/Geist-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Geist";
+  src: url("../assets/fonts/Geist-SemiBold.ttf") format("truetype");
+  font-weight: semibold;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Geist";
+  src: url("../assets/fonts/Geist-Light.ttf") format("truetype");
+  font-weight: light;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  --background-color: #000000;
+  --light-text-color: #ffffff;
+  --primary-color: #8803ff;
+  --light-dark-color: #171717;
+
+  --font-family: "Geist", sans-serif;
+
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 38px;
+  --font-size-4xl: 52px;
+  --font-size-5xl: 64px;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--light-text-color);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  font-weight: light;
+
+  .banner {
+    background-image: url("../assets/images/banner_bg.png");
+    background-size: cover;
+    background-position: left top;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .banner-wrapper {
+      height: 100%;
+      width: 100%;
+      max-width: 1280px;
+      padding-top: 10rem;
+      display: flex;
+      justify-content: space-between;
+
+      .banner-content {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+
+        h1 {
+          font-size: var(--font-size-5xl);
+          text-transform: uppercase;
+          max-width: 700px;
+        }
+
+        .palette-creator {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+          max-width: 400px;
+
+          .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            label {
+              font-size: var(--font-size-lg);
+              font-weight: light;
+            }
+
+            input {
+              height: 42px;
+              padding: 0.5rem;
+              background-color: var(--light-dark-color);
+              border: none;
+              color: var(--light-text-color);
+              border-radius: 0.5rem;
+              font-size: var(--font-size-lg);
+              font-weight: light;
+            }
+          }
+        }
+      }
+
+      .selected-palette {
+        transform: translateY(16rem);
+        position: relative;
+
+        img {
+          position: absolute;
+          z-index: -1;
+        }
+      }
+    }
+  }
+
+  .palette-history {
+    margin-top: 10rem;
+    min-height: 80vh;
+    background-image: url("../assets/images/history_bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 6rem 0;
+
+    .history-wrapper {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+
+      h2 {
+        font-size: var(--font-size-3xl);
+        text-transform: uppercase;
+      }
+    }
+  }
+}

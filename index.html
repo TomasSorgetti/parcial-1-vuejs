@@ -8,24 +8,30 @@
     <title>Parcial 1 - Tomás Sorgetti</title>
 
     <!-- Styles -->
-    <link rel="stylesheet" href="src/styles/global.css" />
+    <link rel="stylesheet" href="styles/global.css" />
   </head>
   <body>
     <!-- App -->
     <div id="root" v-cloak>
-      <main-layout>
-        <h1>{{ message }}</h1>
-        <todo-item
-          v-for="todo in todos"
-          :key="todo.id"
-          :todo="todo"
-        ></todo-item>
-        <button-component @click="addTodo">Añadir Tarea</button-component>
-      </main-layout>
+      <main>
+        <!-- Banner -->
+        <section class="banner">
+          <div class="banner-wrapper">
+            <div class="banner-content">
+              <h1>Gestor de paletas de colores</h1>
+              <palette-creator></palette-creator>
+            </div>
+            <selected-palette></selected-palette>
+          </div>
+        </section>
+
+        <!-- Palette History -->
+        <palette-history></palette-history>
+      </main>
     </div>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/vue@3.5.13/dist/vue.global.js"></script>
-    <script type="module" src="src/main.js"></script>
+    <script type="module" src="app.js"></script>
   </body>
 </html>
