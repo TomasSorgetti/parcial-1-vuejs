@@ -13,6 +13,7 @@
   <body>
     <!-- App -->
     <div id="root" v-cloak>
+      <loading :is-loading="isLoading"></loading>
       <main>
         <!-- Banner -->
         <section class="banner">
@@ -22,15 +23,20 @@
               <palette-creator
                 :is-loading="isLoading"
                 :categories="categories"
+                :modes="modes"
                 :create-palette="createPalette"
+                :set-selected-palette="setSelectedPalette"
               ></palette-creator>
             </div>
-            <selected-palette></selected-palette>
+            <selected-palette
+              :selected-palette="selectedPalette"
+            ></selected-palette>
           </div>
         </section>
 
         <!-- Palette History -->
         <palette-history
+          :is-loading="isLoading"
           :palettes="palettes"
           :delete-palette="deletePalette"
         ></palette-history>
