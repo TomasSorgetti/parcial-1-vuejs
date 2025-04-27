@@ -19,14 +19,21 @@
           <div class="banner-wrapper">
             <div class="banner-content">
               <h1>Gestor de paletas de colores</h1>
-              <palette-creator></palette-creator>
+              <palette-creator
+                :is-loading="isLoading"
+                :categories="categories"
+                :create-palette="createPalette"
+              ></palette-creator>
             </div>
             <selected-palette></selected-palette>
           </div>
         </section>
 
         <!-- Palette History -->
-        <palette-history></palette-history>
+        <palette-history
+          :palettes="palettes"
+          :delete-palette="deletePalette"
+        ></palette-history>
       </main>
     </div>
 

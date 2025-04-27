@@ -1,26 +1,159 @@
 const app = Vue.createApp({
   data() {
-    return {};
+    return {
+      isLoading: false,
+      palettes: [],
+      selectedPalette: null,
+      categories: [
+        { value: "warm", label: "Cálida" },
+        { value: "cool", label: "Fría" },
+        { value: "neutral", label: "Neutra" },
+        { value: "vibrant", label: "Vibrante" },
+      ],
+    };
   },
-  methods: {},
+  methods: {
+    createPalette(palette) {
+      this.palettes.push(palette);
+      // localStorage.setItem("palettes", JSON.stringify(this.palettes));
+    },
+    deletePalette(id) {
+      // localStorage.setItem("palettes", JSON.stringify(this.palettes));
+    },
+  },
+  mounted() {
+    // const storedPalettes = localStorage.getItem("palettes");
+    // if (storedPalettes) {
+    //   this.palettes = JSON.parse(storedPalettes);
+    // } else {
+    this.palettes = [
+      {
+        name: "Paleta 1",
+        description: "Paleta 1",
+        category: "warm",
+        mode: "light",
+        colors: ["#FF6F61", "#FFB347"],
+      },
+      {
+        name: "Paleta 2",
+        description: "Paleta 2",
+        category: "cool",
+        mode: "dark",
+        colors: ["#4682B4", "#00CED1"],
+      },
+    ];
+    // }
+  },
 });
 
+// Palette Creator
 app.component("palette-creator", {
+  props: {
+    isLoading: {
+      type: Boolean,
+      required: true,
+    },
+    categories: {
+      type: Array,
+      required: true,
+    },
+    createPalette: {
+      type: Function,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      formData: {
+        name: "",
+        description: "",
+        category: "",
+        mode: "",
+      },
+      errorForm: {
+        name: "",
+        description: "",
+        category: "",
+        mode: "",
+      },
+    };
+  },
+  methods: {
+    submitForm() {
+      if (this.formData.mode && this.formData.category) {
+        // todo => crear paleta
+        this.resetForm();
+      }
+    },
+    resetForm() {
+      this.formData.name = "";
+      this.formData.description = "";
+      this.formData.category = "";
+      this.formData.mode = "";
+    },
+  },
   template: `
-    <form class="palette-creator">
+    <form @submit.prevent="submitForm" class="palette-creator">
       <div class="form-field">
         <label for="">Nombre de paleta:</label>
-        <input type="text" placeholder="Paleta 1" />
-      </div>
-      <div class="form-field">
-        <label for="">Descripción:</label>
-        <input type="text" placeholder="Paleta 1" />
+        <input
+          v-model="formData.name"
+          type="text"
+          placeholder="La mejor paleta de todas"
+        />
       </div>
 
+      <div class="form-field">
+        <label for="">Descripción:</label>
+        <input
+          v-model="formData.description"
+          type="text"
+          placeholder="Descripción de la mejor paleta"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="">Categoría:</label>
+        <select
+          v-model="formData.category"
+          required
+        >
+          <option value="" disabled>Selecciona una categoría</option>
+          <option v-for="category in categories">
+            {{ category.label }}
+          </option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label >Modo:</label>
+        <div class="checkbox-group">
+            <label>
+              <input
+                type="checkbox"
+                :checked="formData.mode === 'light'"
+                @change="updateMode('light')"
+                class="checkbox"
+              >
+              Claro
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                :checked="formData.mode === 'dark'"
+                @change="updateMode('dark')"
+                class="checkbox"
+              >
+              Oscuro
+            </label>
+          </div>
+      </div>
+
+      <button type="submit" class="create-palette">Crear paleta</button>
     </form>
   `,
 });
 
+// Selected Palette
 app.component("selected-palette", {
   template: `
     <div class="selected-palette">
@@ -75,12 +208,48 @@ app.component("selected-palette", {
   `,
 });
 
+// Palette History
 app.component("palette-history", {
+  props: {
+    palettes: {
+      type: Array,
+      required: true,
+    },
+    deletePalette: {
+      type: Function,
+      required: true,
+    },
+  },
+  data() {
+    return {};
+  },
   template: `
     <section class="palette-history">
       <div class="history-wrapper">
         <h2>Historial de paletas</h2>
-        <div></div>
+        <div class="palette-list">
+          <p v-if="palettes.length === 0">No hay paletas en el historial. Creá una!</p>
+          <div v-else v-for="palette in palettes" class="palette-item">
+            <button @click="deletePalette(palette.id)" class="delete-palette">X</button>
+            <h3>{{ palette.name }}</h3>
+            <p>{{palette.description}}</p>
+            <div class="palette-info">
+              <div class="mode-info">
+                <div class="mode-circle"></div>
+                <p>{{palette.mode}}</p>
+              </div>
+              <div class="category-info">
+                <div class="category-circle"></div>
+                <p>{{palette.category}}</p>
+              </div>
+            </div>
+            <ul class="color-list">
+              <li v-for="(color, index) in palette.colors">
+                <div v-bind:style="{ backgroundColor: color }" class="color-circle">asd</div>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
   `,

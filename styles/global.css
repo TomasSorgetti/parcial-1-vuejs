@@ -42,7 +42,10 @@
   --font-size-4xl: 52px;
   --font-size-5xl: 64px;
 }
-
+ul,
+ol {
+  list-style: none;
+}
 body {
   background-color: var(--background-color);
   color: var(--light-text-color);
@@ -95,7 +98,8 @@ body {
               font-weight: light;
             }
 
-            input {
+            input,
+            select {
               height: 42px;
               padding: 0.5rem;
               background-color: var(--light-dark-color);
@@ -104,6 +108,62 @@ body {
               border-radius: 0.5rem;
               font-size: var(--font-size-lg);
               font-weight: light;
+            }
+
+            .checkbox-group {
+              display: flex;
+              gap: 1rem;
+
+              label {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+              }
+              .checkbox {
+                width: 20px;
+                height: 20px;
+                cursor: pointer;
+                appearance: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                border-radius: 4px;
+                background-color: var(--light-dark-color);
+                position: relative;
+
+                &:checked {
+                  background-color: var(--primary-color);
+                  border-color: var(--primary-color);
+
+                  &::after {
+                    content: "";
+                    position: absolute;
+                    top: 2px;
+                    left: 6px;
+                    width: 5px;
+                    height: 10px;
+                    border: solid white;
+                    border-width: 0 2px 2px 0;
+                    transform: rotate(45deg);
+                  }
+                }
+              }
+            }
+          }
+
+          .create-palette {
+            height: 42px;
+            padding: 0.5rem;
+            background-color: var(--primary-color);
+            border: none;
+            color: var(--light-text-color);
+            border-radius: 0.5rem;
+            font-size: var(--font-size-lg);
+            font-weight: light;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+
+            &:hover {
+              opacity: 0.7;
             }
           }
         }
@@ -122,7 +182,7 @@ body {
   }
 
   .palette-history {
-    margin-top: 10rem;
+    margin-top: 16rem;
     min-height: 80vh;
     background-image: url("../assets/images/history_bg.png");
     background-size: cover;
@@ -138,6 +198,81 @@ body {
       h2 {
         font-size: var(--font-size-3xl);
         text-transform: uppercase;
+      }
+      .palette-list {
+        margin-top: 4rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+
+        .palette-item {
+          position: relative;
+          background-color: rgba(0, 0, 0, 0.281);
+          border: 1px solid var(--light-dark-color);
+          padding: 1rem 2rem;
+          border-radius: 20px;
+          width: 100%;
+          max-width: 360px;
+          min-height: 200px;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+
+          .delete-palette {
+            position: absolute;
+            top: 0.5rem;
+            right: 1rem;
+            background-color: transparent;
+            border: none;
+            color: var(--light-text-color);
+            font-size: var(--font-size-2xl);
+            cursor: pointer;
+          }
+
+          h3 {
+            text-transform: uppercase;
+          }
+          .palette-info {
+            display: flex;
+            gap: 1rem;
+            .mode-info {
+              display: flex;
+              gap: 0.5rem;
+              align-items: center;
+            }
+            .category-info {
+              display: flex;
+              gap: 0.5rem;
+              align-items: center;
+            }
+            .mode-circle {
+              width: 10px;
+              height: 10px;
+              border-radius: 50%;
+              background-color: var(--primary-color);
+            }
+            .category-circle {
+              width: 10px;
+              height: 10px;
+              border-radius: 50%;
+              background-color: var(--primary-color);
+            }
+          }
+
+          .color-list {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            .color-circle {
+              width: 30px;
+              height: 30px;
+              border-radius: 50%;
+              border: 1px solid var(--light-dark-color);
+            }
+          }
+        }
       }
     }
   }
