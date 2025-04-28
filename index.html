@@ -13,7 +13,10 @@
   <body>
     <!-- App -->
     <div id="root" v-cloak>
+      <!-- Loading spinner -->
       <loading :is-loading="isLoading"></loading>
+
+      <!-- Main -->
       <main>
         <!-- Banner -->
         <section class="banner">
@@ -41,6 +44,16 @@
           :delete-palette="deletePalette"
         ></palette-history>
       </main>
+
+      <!-- Alert Modal -->
+      <modal
+        v-if="modal.show"
+        :show="modal.show"
+        :message="modal.message"
+        :type="modal.type"
+        @close="closeModal"
+        @confirm="handleConfirm"
+      />
     </div>
 
     <!-- Scripts -->

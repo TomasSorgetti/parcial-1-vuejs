@@ -16,11 +16,41 @@ const app = Vue.createApp({
         { value: "light", label: "Claro" },
         { value: "dark", label: "Oscuro" },
       ],
-      setIsLoading: (isLoading) => (this.isLoading = isLoading),
+      modal: {
+        show: false,
+        message: "",
+        type: "alert",
+        onConfirm: null,
+      },
     };
   },
 
   methods: {
+    showAlert(message) {
+      this.modal = {
+        show: true,
+        message,
+        type: "alert",
+        onConfirm: null,
+      };
+    },
+    showConfirm(message, onConfirm) {
+      this.modal = {
+        show: true,
+        message,
+        type: "confirm",
+        onConfirm,
+      };
+    },
+    closeModal() {
+      this.modal.show = false;
+    },
+    handleConfirm() {
+      if (this.modal.onConfirm) {
+        this.modal.onConfirm();
+      }
+      this.closeModal();
+    },
     createPalette(palette) {
       //! Acá ocurre que palette se borra antes de que se termine de crear debido al set time out, por eso se me ocurrio crear una copia
       const paletteData = { ...palette };
@@ -41,17 +71,19 @@ const app = Vue.createApp({
         this.palettes.push(newPalette);
         localStorage.setItem("palettes", JSON.stringify(this.palettes));
         this.isLoading = false;
-      }, 2500);
+        this.showAlert("¡Paleta creada exitosamente!");
+      }, 1500);
     },
     deletePalette(id) {
-      const confirm = window.confirm("Estas seguro?");
-      if (!confirm) return;
-      this.isLoading = true;
-      setTimeout(() => {
-        this.palettes = this.palettes.filter((palette) => palette.id !== id);
-        localStorage.setItem("palettes", JSON.stringify(this.palettes));
-        this.isLoading = false;
-      }, 1000);
+      this.showConfirm("¿Estás seguro de eliminar esta paleta?", () => {
+        this.isLoading = true;
+        setTimeout(() => {
+          this.palettes = this.palettes.filter((palette) => palette.id !== id);
+          localStorage.setItem("palettes", JSON.stringify(this.palettes));
+          this.isLoading = false;
+          this.showAlert("Paleta eliminada exitosamente");
+        }, 500);
+      });
     },
     setSelectedPalette(palette) {
       this.selectedPalette = palette;
@@ -219,16 +251,17 @@ app.component("palette-creator", {
       this.validateInput("mode", this.formData.mode);
     },
     updateMode(mode) {
-      this.validateInput("mode", mode);
       this.formData.mode = mode;
+      this.validateInput("mode", mode);
     },
   },
   template: `
     <form @submit.prevent="submitForm" class="palette-creator">
       <div class="form-field">
-        <label for="">Nombre de paleta:</label>
+        <label for="name">Nombre de paleta:</label>
         <input
-          v-model="formData.name"
+          id="name"
+          v-model.trim="formData.name"
           type="text"
           placeholder="La mejor paleta de todas"
           @blur="validateInput('name', formData.name)"
@@ -237,9 +270,10 @@ app.component("palette-creator", {
       </div>
 
       <div class="form-field">
-        <label for="">Descripción:</label>
+        <label for="description">Descripción:</label>
         <input
-          v-model="formData.description"
+          id="description"
+          v-model.trim="formData.description"
           type="text"
           placeholder="Descripción de la mejor paleta"
           @blur="validateInput('description', formData.description)"
@@ -248,9 +282,10 @@ app.component("palette-creator", {
       </div>
 
       <div class="form-field">
-        <label for="">Categoría:</label>
+        <label for="category">Categoría:</label>
         <select
-          v-model="formData.category"
+          id="category"
+          v-model.trim="formData.category"
           @change="validateInput('category', formData.category)"
         >
           <option value="" disabled>Selecciona una categoría</option>
@@ -266,7 +301,7 @@ app.component("palette-creator", {
             <label v-for="mode in modes">
               <input
                 type="checkbox"
-                v-bind:checked="formData.mode === mode.value"
+                v-bind:checked="formData.mode === mode.value ? true : false"
                 class="checkbox"
                 @change="updateMode(mode.value)"
               >
@@ -369,7 +404,7 @@ app.component("palette-history", {
   methods: {
     copyColor(color) {
       navigator.clipboard.writeText(color);
-      alert("Color copiado al portapapeles");
+      this.$root.showAlert("Color copiado al portapapeles");
     },
   },
   template: `
@@ -404,6 +439,7 @@ app.component("palette-history", {
   `,
 });
 
+// Loading spinner
 app.component("loading", {
   props: {
     isLoading: {
@@ -417,4 +453,51 @@ app.component("loading", {
     </div>
   `,
 });
+
+// Modal
+app.component("modal", {
+  props: {
+    show: {
+      type: Boolean,
+      required: true,
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      default: "alert",
+    },
+  },
+  methods: {
+    confirm() {
+      this.$emit("confirm");
+      this.close();
+    },
+    close() {
+      this.$emit("close");
+    },
+    handleOutsideClick(event) {
+      if (event.target.classList.contains("modal")) {
+        this.close();
+      }
+    },
+  },
+  template: `
+    <div v-if="show" class="modal" @click="handleOutsideClick">
+      <div class="modal-content">
+        <p>{{ message }}</p>
+        <div class="modal-buttons">
+          <button v-if="type === 'alert'" @click="close" class="modal-button-confirm modal-button">Aceptar</button>
+          <template v-else>
+            <button @click="close" class="modal-button-cancel modal-button">Cancelar</button>
+            <button @click="confirm" class="modal-button-confirm modal-button">Aceptar</button>
+          </template>
+        </div>
+      </div>
+    </div>
+  `,
+});
+
 app.mount("#root");
